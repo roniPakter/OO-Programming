@@ -8,5 +8,6 @@ public interface IBorrower {
     int takeLoan(ILoan loan);
     void calcPersonalCredit();
     double getCredit();
-    IDebt loan(int loanId);
+    ILoan loan(int loanId);
+    void closeLoan(ILoan loan);
 }

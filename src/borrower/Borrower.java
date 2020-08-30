@@ -75,8 +75,21 @@ public class Borrower extends Person implements IBorrower{
     }
 
     @Override
-    public IDebt loan(int loanId) {
+    public ILoan loan(int loanId) {
+        for (ILoan loan:
+             loansList) {
+            if (loan.getLoanId() == loanId) {
+                return loan;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public void closeLoan(ILoan loan) {
+        this.loansList.remove(loan);
+        usedCreditSum -= loan.getPrinciple();
+        credit += loan.getPrinciple();
     }
 
 }

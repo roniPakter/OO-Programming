@@ -19,10 +19,10 @@ public class Loan implements ILoan{
     public Loan() {
     }
 
-    public Loan(double principle, double interestRate, int periodMonths, IBorrower borrower) {
+    public Loan(double principle, int periodMonths, IBorrower borrower) {
         this.loanId = serialId++;
         this.principle = principle;
-        this.interestRate = interestRate;
+        this.interestRate = Interest.interest(periodMonths);
         this.periodMonths = periodMonths;
         this.borrower = borrower;
         this.startDate = null;
