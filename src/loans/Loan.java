@@ -6,7 +6,7 @@ import interest.Interest;
 import java.util.Date;
 
 public class Loan implements ILoan{
-    static int serialId = 10000;
+    private static int serialId = 10000;
     private int loanId;
     private double principle;
     private double interestRate;
@@ -30,6 +30,7 @@ public class Loan implements ILoan{
         this.isActive = false;
     }
 
+    @Override
     public int getLoanId() {
         return loanId;
     }

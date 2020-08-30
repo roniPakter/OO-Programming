@@ -10,8 +10,8 @@ public class ActiveLoan extends Loan implements IDebt, IExecutable {
     private double remainingDebt;
     Date lastPaymentDate;
 
-    public ActiveLoan(ILoan loan, IBorrower borrower){
-        super(loan.getPrinciple(), loan.getInterestRate(), loan.getPeriodMonths(), borrower);
+    public ActiveLoan(ILoan loan){
+        super(loan.getPrinciple(), loan.getInterestRate(), loan.getPeriodMonths(), loan.borrower());
         this.remainingDebt = this.getPrinciple();
         Date now = new Date();
         this.setStartDate(now);

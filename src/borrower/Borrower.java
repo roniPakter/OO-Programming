@@ -1,9 +1,8 @@
 package borrower;
+import credit.CreditEvaluation;
 import interest.Interest;
-import loans.ActiveLoan;
 import loans.IDebt;
 import loans.ILoan;
-import loans.Loan;
 import person.Person;
 
 import java.util.ArrayList;
@@ -11,46 +10,73 @@ import java.util.Date;
 import java.util.List;
 
 public class Borrower extends Person implements IBorrower{
-    private List<ILoan> loansList;
+    public static final int REJECTED_LOAN_REQUEST_ID = -1;
+    private final List<ILoan> loansList = new ArrayList<>();
     private double credit;
+    private double income;
+    private int numOfChildren;
+    private double usedCreditSum;
 
     public Borrower(){
         super();
-        loansList = new ArrayList<>();
     }
 
-    public Borrower(int id, String name, String address, String phone, String email, Date dateOfBirth) {
+    public Borrower(int id, String name, String address, String phone, String email, Date dateOfBirth, double income, int numOfChildren) {
         super(id, name, address, phone, email, dateOfBirth);
-        loansList = new ArrayList<>();
-        this.credit = this.calcPersonalCredit();
+        this.income = income;
+        this.numOfChildren = numOfChildren;
+        this.usedCreditSum = 0;
+        calcPersonalCredit();
     }
 
     @Override
-    public ILoan requestLoan(double amount, int periodMonths) {
+    public double getLoanInterestSuggestion(double amount, int periodMonths) {
         if (this.credit - amount < 0)
-        return null;
-        double interest = Interest.interest(periodMonths);
-        Loan loan = new Loan(amount, interest, periodMonths, this);
-        return loan;
+            return Interest.REJECTED_LOAN_REQUEST_INTEREST;
+        return Interest.interest(periodMonths);
+    }
+
+    public double getIncome() {
+        return income;
+    }
+
+    public void setIncome(double income) {
+        this.income = income;
+        calcPersonalCredit();
+    }
+
+    public void setNumOfChildren(int numOfChildren) {
+        this.numOfChildren = numOfChildren;
+        calcPersonalCredit();
+    }
+
+    public int getNumOfChildren() {
+        return numOfChildren;
     }
 
     @Override
-    public void takeLoan(ILoan loan) {
-        loansList.add(new ActiveLoan((Loan)loan, this));
+    public int takeLoan(ILoan loan) {
+        if (this.credit - loan.getPrinciple() < 0)
+            return REJECTED_LOAN_REQUEST_ID;
+        this.credit -= loan.getPrinciple();
+        this.usedCreditSum += loan.getPrinciple();
+        loansList.add(loan);
+        return loan.getLoanId();
     }
 
     @Override
-    public double calcPersonalCredit() {
-        return 0;
+    public void calcPersonalCredit() {
+        this.credit = CreditEvaluation.creditEvaluation(this.income, this.numOfChildren) - this.usedCreditSum;
     }
 
     @Override
     public double getCredit() {
-        return 0;
+        return this.credit;
     }
 
     @Override
     public IDebt loan(int loanId) {
         return null;
     }
+
 }
