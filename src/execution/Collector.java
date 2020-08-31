@@ -1,5 +1,6 @@
 package execution;
 
+import borrower.IBorrower;
 import person.Person;
 
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ public class Collector extends Person implements IWorker, ICollector {
     private  double seniority;
     private double salaryPerMission;
     private double sumOfBonuses;
-    private final List<ICollectionMission> doneMissionsList = new ArrayList<ICollectionMission>();
-    private final List<ICollectionMission> openMissionsList = new ArrayList<ICollectionMission>();
+    private final List<ICollectionMission> doneMissionsList = new ArrayList<>();
+    private final List<ICollectionMission> openMissionsList = new ArrayList<>();
     private static final int MAX_OPEN_MISSIONS_OVERLOAD = 3;
     private static final double SENIORITY_COEFFICIENT_ADDED_FOR_EACH_MISSION = 0.01;
 
@@ -33,7 +34,7 @@ public class Collector extends Person implements IWorker, ICollector {
     }
 
     @Override
-    public boolean isFree(Date missionDate) {
+    public boolean isFree() {
         return openMissionsList.size() < MAX_OPEN_MISSIONS_OVERLOAD;
     }
 
@@ -41,6 +42,16 @@ public class Collector extends Person implements IWorker, ICollector {
     public void giveMission(ICollectionMission collectionMission) {
         collectionMission.setCollector(this);
         openMissionsList.add(collectionMission);
+    }
+
+    @Override
+    public ICollectionMission getMission(IBorrower borrower) {
+        for (ICollectionMission mission :
+                openMissionsList) {
+            if (mission.borrowerDetails() == borrower)
+                return mission;
+        }
+        return null;
     }
 
     @Override

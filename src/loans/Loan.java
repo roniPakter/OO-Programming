@@ -45,7 +45,7 @@ public class Loan implements ILoan{
         return interestRate;
     }
 
-    public void setStartDate(Date startDate) {
+    protected void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
